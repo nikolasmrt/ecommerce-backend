@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  # Serviço de Mensageria
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: ecommerce_rabbitmq
+    ports:
+      - "5672:5672" 
+      - "15672:15672" 
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    healthcheck:
+      
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ecommerce_network
+
+  # Microsserviço de Pedidos
+  orders_service:
+    build: 
+      context: ./services/orders
+      dockerfile: Dockerfile
+    container_name: ecommerce_orders
+    command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      
+      - ./services/orders:/app
+    ports:
+      - "8000:8000"
+    environment:
+      
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+      
+      - USE_MOCK_BROKER=false
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - ecommerce_network
+
+networks:
+  ecommerce_network:
+    driver: bridge
