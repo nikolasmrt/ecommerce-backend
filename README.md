@@ -29,18 +29,4 @@ graph LR
     style UC fill:#bfb,stroke:#333,stroke-width:2px
     style Queue fill:#ff9,stroke:#333,stroke-width:2px
 
-
-ecommerce-backend/
-├── docker-compose.yml           # Orquestração da Infraestrutura
-├── README.md                    # Documentação
-└── services/
-    └── orders/                  # Microsserviço de Pedidos
-        ├── Dockerfile           # Imagem do serviço
-        ├── requirements.txt     # Dependências (FastAPI, aio-pika)
-        └── src/
-            ├── main.py          # Entrypoint & Configuração
-            ├── domain/          # Entidades & Regras de Negócio Puras
-            ├── application/     # Casos de Uso (Orquestração)
-            ├── interfaces/      # Portas (Contratos Abstratos)
-            └── infrastructure/  # Implementações (RabbitMQ, Repositórios)
     
